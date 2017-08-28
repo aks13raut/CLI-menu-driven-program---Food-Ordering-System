@@ -10,3 +10,8 @@ program displays the choosed item(s) and price of each item and total amount use
 (items will be stored in array)(for easy deletion if required)
 edit option should be initialized to so that user can make changes if any.
 finally it should be displayed that "Please pay the amount and collect your items from the next counter".
+program needs:
+1.file to store details of food item
+2.will need 2 interfaces one for user one for shopkeeper
+3.a  current total bill at bottom
+4.it should genrate a bill at the end of order and save it to a file which acan be then printed
