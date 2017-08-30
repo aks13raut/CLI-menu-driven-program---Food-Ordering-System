@@ -23,3 +23,5 @@ program needs:
 3.if book is not available option to request to make it available in library
 4.if books is are borrowed nearset date when it will be returned
 5.due date wise list of people who borrowed the book (with name, contact info, address)
+6.function to calculate fine if returned late.
+7.blacklist of people who return book after 10 days of due more than 3 times
