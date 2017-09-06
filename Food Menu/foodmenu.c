@@ -19,6 +19,11 @@ void getmenu(menu *t)
 	char ch,n[30];
 	int i=0;
 	fmenu = fopen("menu.txt","r");
+	if(fmenu == NULL)
+	{
+		printf("Cannot Open File!\a");
+		exit(1);
+	}
 	printf("Enter the your index of choice\nEnter 0 to go back\n");
 	while(fscanf(fmenu,"%d%s%f",t->index,n,t->price)!=EOF)
 		printf("%d%s%f",t->index,n,t->price);
@@ -37,5 +42,5 @@ void main()
 	int choice;
 	item Menu[MAX];
 	Printf("Welcome\n1.menu")
-	menu(Menu);
-	
+	getmenu(Menu);
+}
