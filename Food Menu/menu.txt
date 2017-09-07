@@ -1,6 +1,1 @@
-1 VeggieBurger 270.05
-2 DoubleCheeseburger 310.49
-3 HotDogs 309.99
-4 ChickenWrap 360
-5 CheesyFries 190
 
