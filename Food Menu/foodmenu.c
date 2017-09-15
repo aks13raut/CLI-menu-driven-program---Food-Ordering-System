@@ -1,5 +1,6 @@
 //DS mini project: Food Menu
 #include<stdio.h>
+#include<stdlib.h>
 #define MAX 10
 //item in menu 
 typedef struct mitem
@@ -7,18 +8,18 @@ typedef struct mitem
 	int 	index;
 	char	name[30];
 	float 	price;
-}
+}mitem;
 //item in order
 typedef struct oitem
 {
 	char 	name[30];
 	float 	price;
 	int 	qntty;
-}item;
+}oitem;
 //edits item in menu
-void  editmenu()
+int editmenu()
 {
-	FILE fmenu;
+	FILE *fmenu;
 	mitem x;
 	char another='y',ch;
 	int  noi=0; //no of items in menu
@@ -31,6 +32,7 @@ void  editmenu()
 		if(ch == '\n')
 			noi++;
 	}
+	fclose(fmenu);
 	fmenu = fopen("menu.txt","a");
 	if(fmenu == NULL)
 	{
@@ -39,20 +41,20 @@ void  editmenu()
 	}
 	while(another == 'y')
 	{
-		Printf("Enter name & price of food item: ");
-		scanf("%s%f"",x.name,&x.price);
+		printf("Enter name & price of food item: ");
+		scanf("%s%f",x.name,&x.price);
 		fprintf(fmenu,"%d%s%f\n",++noi,x.name);
-		Printf("Add another record(y/n): ")
+		printf("Add another record(y/n): ");
 		fflush(stdin);
 		scanf("%c",&another);
 	}
 	fclose(fmenu);
+	return noi;
 }
 //reads menu from file to array of mitem
 void getmenu(mitem menu[])
 {
-	FILE fmenu;
-	char ch,n[30];
+	FILE *fmenu;
 	int  i=0;
 	fmenu = fopen("menu.txt","r");
 	if(fmenu == NULL)
@@ -60,22 +62,33 @@ void getmenu(mitem menu[])
 		printf("cannot open file\n");
 		exit(2);
 	}
-	while(1)
-	{
-		printf("%d%s%f",t->index,n,t->price);
-		while(ch!=',')
-		{
-			t->name[j] = ch;
-			j++;
-			ch = fgetc(fmenu);
-		}
-		t->name[j]='\0';
-		prvch = ch;
+	while(fscanf(fmenu,"%d%s%f",menu[i].index,menu[i].name,menu[i].price) != EOF)
+		i++;
+	fclose(fmenu);
+}
+void displaymenu(mitem menu[],int noi)
+{
+	int  i;
+	for(i=0;i<noi;i++)
+		printf("%d %s %f",menu[i].index,menu[i].name,menu[i].price);
 }
 void main()
 {
-	int choice;
+	int ch,noi,n;
+	char another='y';
 	mitem Menu[MAX];
-	Printf("Welcome\n1.menu 2.Admin login");
+	printf("Welcome\n1.menu 2.Admin login");
+	scanf("d",&ch);
 	getmenu(Menu);
-	printf("Enter the your index of choice\nEnter 0 to go back\n");
+	switch(ch)
+	{
+		case 1 :while(another == 'y')
+				{
+					displaymenu(Menu,noi);
+					printf("Enter the your index of choice: ");
+					scanf("%d",&n);
+				}
+		case 2 :editmenu(Menu);
+		default:printf("Invalid Choice. Please try again\n");
+	}
+}
