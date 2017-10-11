@@ -6,7 +6,7 @@ void main()
 {
 	FILE *fp;
 	int i=1;
-	char userid[MAX], pass[MAX],u[MAX],p[MAX];
+	char userid[20], pass[20],u[20],p[20];
 	fp = fopen("credentials.txt","r");
 	if(fp == NULL)
 	{

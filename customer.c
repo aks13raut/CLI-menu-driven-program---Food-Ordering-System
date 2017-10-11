@@ -93,14 +93,13 @@ void displaymenu(menu *t)
     mitem *q;
     if(t->start == NULL)
     {
-        printf("Queue Empty\n");
+        printf("Menu Empty\n");
         return;
     }
     q = t->start;
     while(q!= NULL)
     {
-		printf("%d\n",q->rank);
-        printf("%d. %s  --  %f Rs\n",i++,q->name,q->price);
+		printf("%d. %-20s -- %.3f Rs\n",i++,q->name,q->price);
         q = q->next;
     }
     printf("\n");
@@ -117,10 +116,10 @@ void display_ol(order_list *t)
     q = t->start;
     while(q!= NULL)
     {
-        printf("%d. %s | %f * %d = %f Rs\n",i++,q->name,q->price,q->quantity,q->quantity*q->price);
+        printf("%d. %-20s | %5f * %d = %5f Rs\n",i++,q->name,q->price,q->quantity,q->quantity*q->price);
         q = q->next;
     }
-    printf("Current Total = %lf\n",t->total);
+    printf("Current Total = %5lf RS\n",t->total);
 }
 void rank(menu *m,char a[],int n)
 {
@@ -160,7 +159,7 @@ void add(menu *m,order_list *ol,int i,int n)
 	ol->total += (x->price*x->quantity);
 	rank(m,q->name,n); 
 }
-void edit(menu *m,order_list *ol,int i,int n)
+void change_qnty(menu *m,order_list *ol,int i,int n)
 {
 	oitem *q = ol->start;
 	for(int j=0;j < i-1&& q != NULL;j++)
@@ -226,7 +225,7 @@ void print(order_list *ol)
 		q = q->next;
 	}
 	printf("\n___________________________________________________________\n\n");
-	printf("Total = %lf",ol->total);
+	printf("Total = %5lf Rs",ol->total);
 	fclose(forder);
 }
 void save(menu *m,int reset)
@@ -250,46 +249,61 @@ void save(menu *m,int reset)
 }
 void main()
 {
-	int ch,n,reset;
-	char another='y';
+	int ch,n,reset,pos;
+	float newP;
+	char c,enter;
 	menu m;
 	order_list ol;
 	m.start = NULL;
 	ol.start = ol.last = NULL;
 	ol.total = 0;
-	reset = getmenu(&m);
-	displaymenu(&m);
-	add(&m,&ol,1,3);
-	display_ol(&ol);
-	displaymenu(&m);
-	add(&m,&ol,2,2);
-	display_ol(&ol);
-	displaymenu(&m);
-	edit(&m,&ol,2,5);
-	display_ol(&ol);
-	displaymenu(&m);
-	remove1(&m,&ol,1);
-	add(&m,&ol,3,7);
-	display_ol(&ol);
-	displaymenu(&m);
-	display_ol(&ol);
-	displaymenu(&m);
-	print(&ol);
-	save(&m,reset);
-	/*
-	printf("Welcome\n1.menu 2.Admin login");
-	scanf("d",&ch);
 	getmenu(&m);
-	switch(ch)
+	while(1)
 	{
-		case 1 :while(another == 'y')
-				{
-					displaymenu(&m);
-					printf("Enter the your index of choice: ");
+		printf("MENU\n");
+		displaymenu(&m);
+		printf("Welcome:-\n\n1.Add Item\n2.Remove Item\n3.Change Quantity\n4.View Order\n5.Confirm\n6.Cancel\n\nEnter your choice: ");
+		scanf("%d",&ch);
+		if(ch == 6)
+		{
+			printf("Order cancelled\n");
+			break;
+		}
+		switch(ch)
+		{
+			case 1 :printf("Enter index of food you want: ");
+					scanf("%d",&pos);
+					printf("How many do you want?: ");
 					scanf("%d",&n);
-				}
-		case 2 :edit(&m);
-		default:printf("Invalid Choice. Please try again\n");
+					add(&m,&ol,pos,n);
+					break;
+			case 2 :display_ol(&ol);
+					printf("Eneter index of item to be deleted: ");
+					scanf("%d",&pos);
+					remove1(&m,&ol,pos);
+					break;    
+			case 3 :display_ol(&ol);
+					printf("Eneter index of item to change_quantity: ");
+					scanf("%d",&pos);
+					printf("how many do you want?: ");
+					scanf("%f",&newP);
+					change_qnty(&m,&ol,pos,newP);
+					break;         
+			case 4 :printf("ORDER\n");
+					display_ol(&ol);
+					break;
+			case 5 :display_ol(&ol);
+					printf("Do you want Confirm this Order?(y/n)");
+					fflush(stdin);
+					scanf("%c",&c);
+					if(c == 'y' || c == 'Y')
+					{
+						print(&ol);
+						save(&m,reset);
+						printf("Order placed successfully\n");
+						exit(0);
+					}
+			default:printf("Invalid Input!\n");
+		}
 	}
-	*/
 }

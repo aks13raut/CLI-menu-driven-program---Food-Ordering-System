@@ -3,33 +3,66 @@
 #include<stdlib.h>
 #include<string.h>
 #define MAX 10
-//item in menu 
+//item in menu - node
 typedef struct mitem
 {
 	char	name[30];
 	float 	price;
-	int	rank;
+	int		rank;
 	struct 	mitem *next;
 }mitem;
-//menu
+//menu - priority Queue
 typedef struct menu
 {
 	mitem *start;
 }menu;
+
+int login()
+{
+	FILE *fp;
+	int i=1;
+	char userid[20], pass[20],u[20],p[20];
+	fp = fopen("credentials.txt","r");
+	if(fp == NULL)
+	{
+		printf("cannot open file\n");
+		exit(1);
+	}
+	fscanf(fp,"%s%s",u,p);
+	printf("Enter UserID: ");
+	fflush(stdin);
+	gets(userid);
+	if(strcmp(u,userid) != 0)
+	{
+		printf("Invalid UserID!\n");
+		return 0;
+	}
+	else
+	{
+		printf("Enter Password: ");
+		gets(pass);
+		if(strcmp(p,pass) != 0)
+		{
+			printf("Invalid Password!\n");	
+			return 0;
+		}
+	}
+	printf("Login Successful\n");
+	return 1;
+}
 void displaymenu(menu *t)
 {
-	int i=1;
+	int i=1; // index
     mitem *q;
     if(t->start == NULL)
     {
-        printf("Queue Empty\n");
+        printf("Menu Empty\n");
         return;
     }
     q = t->start;
     while(q!= NULL)
     {
-		printf("%d\n",q->rank);
-        printf("%d. %s  --  %f Rs\n",i++,q->name,q->price);
+        printf("%d. %-20s -- %.3f Rs\n",i++,q->name,q->price);
         q = q->next;
     }
     printf("\n");
@@ -93,13 +126,13 @@ void change_price(menu *m,int pos,float newPrice)
 	}
 	for(int i=0;i < pos-1 && q != NULL;i++)
         q = q->next;
+	printf("%x",q);
 	if(pos <= 0|| q == NULL)
 	{
 		printf("Invalid Choice!\n");
 		return;
 	}
-	printf("price of %s changed from %.3f to %.3f: ",q->price,newPrice);
-	printf("price of %s changed from %.3f to %.3f: ",q->price,newPrice);
+	printf("price of %s changed from %.3f to %.3f: ",q->name,q->price,newPrice);
 	q->price = newPrice;
 }
 void deletepos(menu *m,int pos)
@@ -141,28 +174,55 @@ void save(menu *m)
 }
 void main()
 {
-	int ch,n;
-	char c;
+	int ch1,ch2,n=0;
+	char c,a[20];
 	menu m;
 	mitem food;
 	m.start = NULL;
 	food.rank = 0;
+	printf("1.Login\n2.Register\n3.change Password\nEnter your Choice: ");
+	scanf("%d",&ch1);
+	switch(ch1)
+	{
+		case 1 :while(n < 3)
+				{
+					if(login())
+						break;
+					n++;
+					printf("%d attempts left\n",3-n);
+				}
+				break;
+		case 2 :
+		case 3 :while(n < 3)
+				{
+					if(login())
+						break;
+					n++;
+				}
+				break;
+		default:printf("Invalid Input!\n");
+	}
+	if(login  == 0)
+	{
+		printf("3 Consecutive Failed Attempts\nTry again Latar.");
+		exit(6);
+	}
 	getmenu(&m);
-	displaymenu(&m);
 	while(1)
 	{
 		displaymenu(&m);
-		printf("Menu:-\n1.Add Item\n2.Remove Item\n3.Change Price\n4.create new menu\n5.Exit\nEnter your choice: ");
-		scanf("%d",&ch);
-		if(ch == 5)
+		printf("Menu:-\n1.Add Item\n2.Remove Item\n3.Change Price\n4.Remove All\n5.Exit\nEnter your choice: ");
+		scanf("%d",&ch2);
+		if(ch2 == 5)
 		{
 			printf("Do you want to save the changes?(y/n): ");
+			fflush(stdin);
 			scanf("%c",&c);
 			if(c == 'y'||c == 'Y')
 				save(&m);
 			break;
 		}
-		switch(ch)
+		switch(ch2)
 		{
 			case 1 :printf("Enter Name of food: ");
 					fflush(stdin);
@@ -181,7 +241,7 @@ void main()
 					scanf("%f",&food.price);
 					change_price(&m,n,food.price);
 					break;         
-			case 4 :
+			case 4 :m.start = NULL;
 					break;
 			default:printf("Invalid Input!\n");
 		}
