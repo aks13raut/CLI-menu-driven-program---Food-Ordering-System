@@ -1,0 +1,73 @@
+#include<stdio.h>
+#include<conio.h>
+#include<stdlib.h>
+#include<graphics.h>
+void main()
+{
+	FILE *p;
+	int ch,nxt,ch1,og;
+	char username[20],password[20],uname[20],pword[20],nuname[20],npword[20];
+	textcolor(GREEN);
+	clrscr();
+	p=fopen("TEST.C","w");
+	if(p==NULL)
+	{
+		printf("\nFile does not exist!");
+		return;
+	}
+	printf("\tHello and Welcome to Food Ordering System");
+	printf("\n\nPlease enter any username and password of your choice to access the system: ");
+	printf("\n\n\n\t\tUsername: ");
+	gets(username);
+	fprintf(p,"Username: %s",username);
+	printf("\n\n\t\tPassword: ");
+	gets(password);
+	fprintf(p,"\nPassword: %s",password);
+	printf("\n\nPress 1 and hit enter to continue!: ");
+	scanf("%d",&nxt);
+	if(nxt==1)
+	{
+		clrscr();
+		printf("\nWhat would you like to do?");
+		printf("\n\n1. Login\n2. Signup");
+		printf("\n\nEnter your choice: ");
+		scanf("%d",&ch1);
+		if(ch1==1)
+		{
+			clrscr();
+			printf("\n\tUsername: ");
+			gets(uname);
+			printf("\n\n\tPassword: ");
+			gets(pword);
+			p=fopen("Test.C","r");
+			while(p!=NULL)
+			{
+				if(strcmp(username,uname)==0 && strcmp(password,pword)==0)
+					printf("\nYou may Proceed");
+				else
+					printf("\nWrong Password");
+			}
+		}
+		else if(ch1==2)
+		{
+			clrscr();
+			p=fopen("Test.C","w");
+			fclose(p);
+			p=fopen("Test.C","w");
+			printf("\nChanging Username and password");
+			printf("\n\n\tNew Username: ");
+			gets(nuname);
+			fprintf(p,"Username: %s",nuname);
+			printf("\n\tNew Password: ");
+			gets(npword);
+			fprintf(p,"Password: ");
+			printf("\n\nUsername and Password Successfully Updated");
+			printf("\nPress 1 and hit enter to continue!: ");
+			scanf("%d",&og);
+		}
+	fclose(p);
+	getch();
+	}
+}
+
+
