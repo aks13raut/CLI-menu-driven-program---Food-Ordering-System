@@ -16,19 +16,90 @@ typedef struct menu
 {
 	mitem *start;
 }menu;
+typedef struct stack
+{
+	int s[100];
+	int tos;
+}stack;
 
+void push(stack *t,int ele)
+{
+	t->s[++t->tos] = ele;
+}
+char pop(stack *t)
+{
+	int z = t->s[t->tos];
+	t->tos--;
+	if(z>9)
+	     return((char)z+55);
+	else return((char)z+'0');
+}
+stack tobaseN(int n,int d)
+{
+	stack x;
+	x.tos=-1;
+	while(d!=0)
+	{
+		push(&x,d%n);
+		d=d/n;
+	}
+	return x;
+}
+void hash(char pass[],int m,char hash[])
+{
+	stack x;
+	char ch,temp[10];
+	int i=0,b,k,n = strlen(pass);
+	hash[0] = '\0';
+	x.tos = -1;
+	while(i<n)
+	{
+		ch = pass[i++];
+		b = m + (i*i)%n;
+		while(b < 2)
+			b += m;
+		x = tobaseN(b,ch);
+		k = 0;
+		while(x.tos > -1)
+			temp[k++] = pop(&x);
+		temp[k] = '\0';
+		strcat(hash,temp);
+	}
+}
+void register1()
+{
+	FILE *fp;
+	char userid[20], pass[20], hashkey[50];
+	menu m;
+	void save(menu *m);
+	fp = fopen("credentials.txt","w");
+	if(fp == NULL)
+	{
+		printf("cannot open file\n");
+		exit(3);
+	}
+	printf("Enter a username: ");
+	scanf("%s",userid);
+	printf("Enter a password: ");
+	scanf("%s",pass);
+	hash(pass,strlen(userid),hashkey);
+	fprintf(fp,"%s %s",userid,hashkey);
+	fclose(fp);
+	printf("Registeration Successful\n");
+	m.start = NULL;
+	save(&m);
+}
 int login()
 {
 	FILE *fp;
-	int i=1;
-	char userid[20], pass[20],u[20],p[20];
+	char userid[20], pass[20], u[20], hashkey1[50], hashkey2[50];
 	fp = fopen("credentials.txt","r");
 	if(fp == NULL)
 	{
 		printf("cannot open file\n");
 		exit(1);
 	}
-	fscanf(fp,"%s%s",u,p);
+	fscanf(fp,"%s%s",u, hashkey1);
 	printf("Enter UserID: ");
 	fflush(stdin);
 	gets(userid);
@@ -41,14 +112,44 @@ int login()
 	{
 		printf("Enter Password: ");
 		gets(pass);
-		if(strcmp(p,pass) != 0)
+		hash(pass,strlen(userid),hashkey2);
+		if(strcmp(hashkey1,hashkey2) != 0)
 		{
 			printf("Invalid Password!\n");	
 			return 0;
 		}
 	}
+	fclose(fp);
 	printf("Login Successful\n");
 	return 1;
+}
+void change_pass()
+{
+	FILE *fp;
+	int i = 0;
+	char ch,userid[20], pass[20], hashkey[50];
+	fp = fopen("credentials.txt","r");
+	if(fp == NULL)
+	{
+		printf("cannot open file\n");
+		exit(2);
+	}
+	fscanf(fp,"%s",userid);
+	fclose(fp);
+	fp = fopen("credentials.txt","w");
+	if(fp == NULL)
+	{
+		printf("cannot open file\n");
+		exit(3);
+	}
+	printf("Enter New Password: ");
+	//fflush(stdin);
+	gets(pass);
+	hash(pass,strlen(userid),hashkey);
+	fprintf(fp,"%s %s",userid,hashkey);
+	fclose(fp);
+	printf("Password changed Successfully\n");
+	fclose(fp);
 }
 void displaymenu(menu *t)
 {
@@ -174,38 +275,61 @@ void save(menu *m)
 }
 void main()
 {
-	int ch1,ch2,n=0;
-	char c,a[20];
+	int ch1,ch2,n=0,loggedin =0;
+	char c = 'n',a[20];
 	menu m;
 	mitem food;
 	m.start = NULL;
 	food.rank = 0;
-	printf("1.Login\n2.Register\n3.change Password\nEnter your Choice: ");
-	scanf("%d",&ch1);
-	switch(ch1)
+	while(1)
 	{
-		case 1 :while(n < 3)
-				{
-					if(login())
+		printf("1. Login\n2. Register\n3. Change Password\n4. Exit\nEnter your Choice: ");
+		scanf("%d",&ch1);
+		if(ch1 == 4)
+			break;
+		switch(ch1)
+		{
+			case 1 :while(n < 3)
+					{
+						loggedin = login();
+						if(loggedin)							
+							break;
+						n++;
+						printf("%d attempts left\n",3-n);
+					}
+					if(loggedin == 0)
+					{	
+						printf("3 Consecutive Failed Attempts\nTry again Latar.");
+						exit(6);
+					}
+					break;
+			case 2 :printf("Previously stored Data will be overwritten\n is it ok?(y/n):");
+					fflush(stdin);
+					scanf("%c",&c);
+					if(c != 'y' && c != 'Y')
 						break;
-					n++;
-					printf("%d attempts left\n",3-n);
-				}
-				break;
-		case 2 :
-		case 3 :while(n < 3)
-				{
-					if(login())
-						break;
-					n++;
-				}
-				break;
-		default:printf("Invalid Input!\n");
-	}
-	if(login  == 0)
-	{
-		printf("3 Consecutive Failed Attempts\nTry again Latar.");
-		exit(6);
+					register1();
+					printf("Please Login if you want to edit the menu\n");
+					break;
+			case 3 :while(n < 3)
+					{
+						loggedin = login();
+						if(loggedin)							
+							break;
+						n++;
+						printf("%d attempts left\n",3-n);
+					}
+					if(loggedin == 0)
+					{	
+						printf("3 Consecutive Failed Attempts\nTry again Latar.");
+						exit(7);
+					}
+					change_pass();
+					break;
+			default:printf("Invalid Input!\n");
+		}
+		if(loggedin)
+			break;
 	}
 	getmenu(&m);
 	while(1)
