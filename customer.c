@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<time.h>
 #define MAX 10
 //item in menu 
 typedef struct mitem
@@ -30,6 +31,13 @@ typedef struct order_list
 	double total;
 	oitem *start,*last;
 }order_list;
+void get_time(char Curr_time[])
+{
+	time_t rawtime = time(0);
+	struct tm * t;
+	t = localtime(&rawtime);
+	sprintf(Curr_time,"%02d-%02d-%d, %02d:%02d:%02d",t->tm_mday,t->tm_mon+1,t->tm_year+1900,t->tm_hour,t->tm_min,t->tm_sec);
+}
 //inserts item in LL in descending order of thier rank
 void insert(menu *t,mitem ele)
 {
@@ -116,10 +124,10 @@ void display_ol(order_list *t)
     q = t->start;
     while(q!= NULL)
     {
-        printf("%d. %-20s | %5f * %d = %5f Rs\n",i++,q->name,q->price,q->quantity,q->quantity*q->price);
+        printf("%d. %-20s | %5.2f * %d = %5.2f Rs\n",i++,q->name,q->price,q->quantity,q->quantity*q->price);
         q = q->next;
     }
-    printf("Current Total = %5lf RS\n",t->total);
+    printf("Current Total = %7lf RS\n",t->total);
 }
 void rank(menu *m,char a[],int n)
 {
@@ -207,8 +215,9 @@ void remove1(menu *m,order_list *ol,int i)
 }
 void print(order_list *ol)
 {
-	int i=1;
+	int i=1,k=1;
 	FILE *forder;
+	char now[25],orderID[15];
 	oitem *q = ol->start;
 	forder = fopen("order.txt","w");
 	if(forder == NULL)
@@ -216,16 +225,24 @@ void print(order_list *ol)
 		printf("cannot open file\n");
 		exit(3);
 	}
+	get_time(now);
 	printf("\t\t\tORDER\n\n");	
 	while(q != NULL)
 	{
-		printf("%d. %s\t| %.3f * %d\t| %.2f Rs\t\n",i++,q->name,q->price,q->quantity,(q->price*q->quantity));
-		printf("      \t|          \t|\n");
-		fprintf(forder,"%d. %s  | %f * %d | %f Rs\n\n",i++,q->name,q->price,q->quantity,(q->price*q->quantity));
+		fprintf(forder,"%d. %-20s  | %5.2f * %d | %5.2f Rs\n\n",i++,q->name,q->price,q->quantity,(q->price*q->quantity));
 		q = q->next;
 	}
-	printf("\n___________________________________________________________\n\n");
-	printf("Total = %5lf Rs",ol->total);
+	orderID[0] = 'O';
+	for(i=0;i<strlen(now);i++)
+		if(now[i] >= '0' && now[i] <= '9')
+			orderID[k++] = now[i];
+	orderID[k] = '\0';
+	fprintf(forder,"%s\n",orderID);
+	printf("OrderNO : %s\n",orderID);
+	display_ol(ol);
+	printf("\n___________________________________________________________________\n\n");
+	fprintf(forder,"Total Bill= %5lf Rs\n",ol->total);
+	printf("Total = %5lf Rs\t\t\t%s\n",ol->total,now);
 	fclose(forder);
 }
 void save(menu *m,int reset)
@@ -237,7 +254,7 @@ void save(menu *m,int reset)
 	{
 		printf("cannot open file\n");
 		exit(4);
-	}	
+	}
 	while(q != NULL)
 	{	
 		if(reset == 1)
@@ -250,8 +267,8 @@ void save(menu *m,int reset)
 void main()
 {
 	int ch,n,reset,pos;
-	float newP;
-	char c,enter;
+	float newQ;
+	char c;
 	menu m;
 	order_list ol;
 	m.start = NULL;
@@ -260,9 +277,9 @@ void main()
 	getmenu(&m);
 	while(1)
 	{
-		printf("MENU\n");
+		printf("\nMENU:-\n");
 		displaymenu(&m);
-		printf("Welcome:-\n\n1.Add Item\n2.Remove Item\n3.Change Quantity\n4.View Order\n5.Confirm\n6.Cancel\n\nEnter your choice: ");
+		printf("Welcome:-\n1.Add Item\n2.Remove Item\n3.Change Quantity\n4.View Order\n5.Confirm\n6.Cancel\n\nEnter your choice: ");
 		scanf("%d",&ch);
 		if(ch == 6)
 		{
@@ -275,6 +292,11 @@ void main()
 					scanf("%d",&pos);
 					printf("How many do you want?: ");
 					scanf("%d",&n);
+					if(n <= 0)
+					{
+						printf("Quantity can not be less than 1\n")
+						break;
+					}
 					add(&m,&ol,pos,n);
 					break;
 			case 2 :display_ol(&ol);
@@ -286,8 +308,13 @@ void main()
 					printf("Eneter index of item to change_quantity: ");
 					scanf("%d",&pos);
 					printf("how many do you want?: ");
-					scanf("%f",&newP);
-					change_qnty(&m,&ol,pos,newP);
+					scanf("%f",&newQ);
+					if(newQ <= 0)
+					{
+						printf("Quantity can not be less than 1\n")
+						break;
+					}
+					change_qnty(&m,&ol,pos,newQ);
 					break;         
 			case 4 :printf("ORDER\n");
 					display_ol(&ol);
@@ -301,9 +328,13 @@ void main()
 						print(&ol);
 						save(&m,reset);
 						printf("Order placed successfully\n");
-						exit(0);
+						break;
 					}
+					break;
 			default:printf("Invalid Input!\n");
 		}
+		if(ch == 5 &&(c == 'y' || c == 'Y'))
+			break;
 	}
+	printf("\t\tThank you for your Visit\n");
 }

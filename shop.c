@@ -227,13 +227,12 @@ void change_price(menu *m,int pos,float newPrice)
 	}
 	for(int i=0;i < pos-1 && q != NULL;i++)
         q = q->next;
-	printf("%x",q);
 	if(pos <= 0|| q == NULL)
 	{
 		printf("Invalid Choice!\n");
 		return;
 	}
-	printf("price of %s changed from %.3f to %.3f: ",q->name,q->price,newPrice);
+	printf("price of %s changed from %.3f to %.3f\n",q->name,q->price,newPrice);
 	q->price = newPrice;
 }
 void deletepos(menu *m,int pos)
