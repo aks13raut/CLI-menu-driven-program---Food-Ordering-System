@@ -4,8 +4,6 @@
 #include<string.h>
 #include<time.h>
 #include<conio.h>
-#include<graphics.h>
-#define MAX 10
 //item in menu - node in LL menu
 typedef struct mitem
 {
@@ -33,7 +31,7 @@ typedef struct order_list
 	double total;
 	oitem *start,*last;
 }order_list;
-/*	
+/*
 	stores time and date in string Curr_time
 	in  dd-mm-yyyy, hh:mm:ss  format
 */
@@ -59,7 +57,7 @@ void insert(menu *t,mitem ele)
 		return;
 	}
 	if(ele.demand > t->start->demand)
-	{ 
+	{
 		p->next = t->start;
 		t->start = p;
 		return;
@@ -78,7 +76,7 @@ void insert(menu *t,mitem ele)
 		q = q->next;
 	}
 	r->next = p;
-	p->next = NULL;  
+	p->next = NULL;
 }
 //holds output till any key is pressed
 void wait()
@@ -294,8 +292,7 @@ void main()
 	m.start = NULL;
 	ol.start = ol.last = NULL;
 	ol.total = 0;
-	clrscr();
-	textcolor(YELLOW);
+	textcolor(GREEN);
 	getmenu(&m);
 	while(1)
 	{

@@ -1,0 +1,4 @@
+Burger39.990002 2
+Cheese_burger65.000000 0
+French_fries45.000000 3
+Wrap67.550003 0
