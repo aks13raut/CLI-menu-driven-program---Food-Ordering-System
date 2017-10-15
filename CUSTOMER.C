@@ -280,7 +280,7 @@ void save(menu *m,int reset)
 		if(reset == 1)
 			q->demand /= 2;
 		fprintf(fmenu,"%s%f %d\n",q->name,q->price,q->demand);
-		q = q->next
+		q = q->next;
 	}
 	fclose(fmenu);
 }
