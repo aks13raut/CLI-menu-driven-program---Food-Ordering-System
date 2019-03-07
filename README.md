@@ -1,4 +1,4 @@
-# mini-project
+# CLI menu driven program - Food Ordering System
 Food Menu
 data for each food item- name,price.
 every customer will get order reciept
