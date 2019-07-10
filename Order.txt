@@ -1,8 +1,6 @@
-1. French_fries          | 39.99 * 3 | 119.97 Rs
+1. Sandwitch             | 45.00 * 3 | 135.00 Rs
 
-2. Wrap                  | 42.75 * 1 | 42.75 Rs
+2. Burger                | 34.00 * 2 | 68.00 Rs
 
-3. Cheese_burger         | 67.55 * 2 | 135.10 Rs
-
-O1410201717214
-Total Bill= 297.820007 Rs
+O10072019154832
+Total Bill= 203.000000 Rs

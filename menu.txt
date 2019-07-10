@@ -1,4 +1,3 @@
-Burger 39.990002 6
-Wrap 42.750000 3
-Cheese_burger 67.550003 3
-French_fries 39.990002 3
+Burger 34.000000 2
+Sandwitch 45.000000 3
+Frankie 70.000000 0

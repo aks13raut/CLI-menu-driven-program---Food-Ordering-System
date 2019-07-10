@@ -4,7 +4,7 @@
 #include<string.h>
 #include<time.h>
 #define MAX 10
-//item in menu 
+//item in menu
 typedef struct mitem
 {
 	char	name[30];
@@ -53,7 +53,7 @@ void insert(menu *t,mitem ele)
 		return;
 	}
 	if(ele.rank > t->start->rank)
-	{ 
+	{
 		p->next = t->start;
 		t->start = p;
 		return;
@@ -72,7 +72,7 @@ void insert(menu *t,mitem ele)
 		q = q->next;
 	}
 	r->next = p;
-	p->next = NULL;  
+	p->next = NULL;
 }
 //loads menu from file to LL of mitem
 int getmenu(menu *t)
@@ -85,7 +85,7 @@ int getmenu(menu *t)
 	{
 		printf("cannot open file\n");
 		exit(2);
-	}	
+	}
 	while(fscanf(fmenu,"%s%f%d",x.name,&x.price,&x.rank) != EOF)
 	{
 		insert(t,x);
@@ -165,7 +165,7 @@ void add(menu *m,order_list *ol,int i,int n)
 		ol->last = x;
 	}
 	ol->total += (x->price*x->quantity);
-	rank(m,q->name,n); 
+	rank(m,q->name,n);
 }
 void change_qnty(menu *m,order_list *ol,int i,int n)
 {
@@ -226,7 +226,7 @@ void print(order_list *ol)
 		exit(3);
 	}
 	get_time(now);
-	printf("\t\t\tORDER\n\n");	
+	printf("\t\t\tORDER\n\n");
 	while(q != NULL)
 	{
 		fprintf(forder,"%d. %-20s  | %5.2f * %d | %5.2f Rs\n\n",i++,q->name,q->price,q->quantity,(q->price*q->quantity));
@@ -256,7 +256,7 @@ void save(menu *m,int reset)
 		exit(4);
 	}
 	while(q != NULL)
-	{	
+	{
 		if(reset == 1)
 			q->rank /= 2;
 		fprintf(fmenu,"%s %f %d\n",q->name,q->price,q->rank);
@@ -294,7 +294,7 @@ void main()
 					scanf("%d",&n);
 					if(n <= 0)
 					{
-						printf("Quantity can not be less than 1\n")
+						printf("Quantity can not be less than 1\n");
 						break;
 					}
 					add(&m,&ol,pos,n);
@@ -303,7 +303,7 @@ void main()
 					printf("Eneter index of item to be deleted: ");
 					scanf("%d",&pos);
 					remove1(&m,&ol,pos);
-					break;    
+					break;
 			case 3 :display_ol(&ol);
 					printf("Eneter index of item to change_quantity: ");
 					scanf("%d",&pos);
@@ -311,11 +311,11 @@ void main()
 					scanf("%f",&newQ);
 					if(newQ <= 0)
 					{
-						printf("Quantity can not be less than 1\n")
+						printf("Quantity can not be less than 1\n");
 						break;
 					}
 					change_qnty(&m,&ol,pos,newQ);
-					break;         
+					break;
 			case 4 :printf("ORDER\n");
 					display_ol(&ol);
 					break;
